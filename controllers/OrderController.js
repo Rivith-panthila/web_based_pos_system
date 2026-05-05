@@ -32,7 +32,9 @@ class OrderController {
     }
     
     showAddItemForm() {
-        alert('Add item functionality - select item from available items');
+        this.view.populateItemSelect();
+        const modal = new bootstrap.Modal(document.getElementById('addItemModal'));
+        modal.show();
     }
     
     addItemToOrder() {
