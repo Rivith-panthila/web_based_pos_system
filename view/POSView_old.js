@@ -1,29 +1,6 @@
-// POS View - UI Management for Dashboard Design
+// POS View - UI Management
 const POSView = {
     chartInstance: null,
-    
-    init: function() {
-        this.updateDateTime();
-        setInterval(() => this.updateDateTime(), 1000);
-    },
-    
-    updateDateTime: function() {
-        const now = new Date();
-        const time = now.toLocaleTimeString('en-US', { 
-            hour: 'numeric', 
-            minute: '2-digit',
-            hour12: true 
-        });
-        const date = now.toLocaleDateString('en-US', { 
-            month: 'numeric', 
-            day: 'numeric', 
-            year: 'numeric' 
-        });
-        
-        $('#currentTime').text(time);
-        $('#currentDate').text(date);
-    },
-    
     showLogin: function() {
         $('#loginContainer').removeClass('d-none');
         $('#mainApp').addClass('d-none');
@@ -48,133 +25,46 @@ const POSView = {
         $('#customerCount').text(stats.customerCount);
         $('#itemCount').text(stats.itemCount);
         $('#orderCount').text(stats.orderCount);
-        $('#totalRevenue').text('RS: ' + stats.totalRevenue.toFixed(2));
+        $('#totalRevenue').text('$' + stats.totalRevenue.toFixed(2));
         
         this.updateChart();
-        this.updateRecentOrders();
     },
     
     updateChart: function() {
         const chartData = POSModel.getOrdersChartData();
+        const maxValue = Math.max(...chartData.data, 1);
         
-        if (this.chartInstance) {
-            this.chartInstance.destroy();
-        }
-        
-        const ctx = document.getElementById('ordersChart').getContext('2d');
-        this.chartInstance = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: chartData.labels,
-                datasets: [{
-                    label: 'Orders Revenue',
-                    data: chartData.data,
-                    borderColor: '#3498db',
-                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#3498db',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: 12,
-                        cornerRadius: 8,
-                        titleFont: {
-                            size: 14,
-                            weight: 'bold'
-                        },
-                        bodyFont: {
-                            size: 13
-                        },
-                        callbacks: {
-                            label: function(context) {
-                                return 'Revenue: RS: ' + context.parsed.y.toFixed(2);
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                if (value >= 1000) {
-                                    return (value / 1000) + 'K';
-                                }
-                                return value;
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
+        // Update bars
+        chartData.labels.forEach((day, index) => {
+            const value = chartData.data[index];
+            const percentage = (value / maxValue) * 100;
+            const bar = $(`.bar[data-day="${day}"]`);
+            bar.css('height', percentage + '%');
+            bar.find('.bar-value').text('$' + value.toFixed(2));
         });
+        
+        // Update SVG line chart
+        this.updateLineChart(chartData.data, maxValue);
     },
     
-    updateRecentOrders: function() {
-        const orders = POSModel.getAllOrders();
-        const recentOrders = orders.slice(0, 3); // Show last 3 orders
-        const tbody = $('#recentOrdersTableBody');
-        tbody.empty();
+    updateLineChart: function(data, maxValue) {
+        const points = data.map((value, index) => {
+            const x = index * 100;
+            const y = 200 - ((value / maxValue) * 180);
+            return `${x},${y}`;
+        });
         
-        if (recentOrders.length === 0) {
-            // Show sample data if no orders
-            tbody.append(`
-                <tr>
-                    <td>1</td>
-                    <td>Rivith Panthila</td>
-                    <td>2026.10.04</td>
-                    <td>2000.00</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Malith Bhagya</td>
-                    <td>2026.10.04</td>
-                    <td>2000.00</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Yasiru Lakshan</td>
-                    <td>2026.10.04</td>
-                    <td>2000.00</td>
-                </tr>
-            `);
-            return;
-        }
+        const pathData = `M ${points.join(' L ')}`;
+        const areaData = `M ${points.join(' L ')} L 700 200 L 0 200 Z`;
         
-        recentOrders.forEach(order => {
-            const customer = POSModel.getCustomer(order.customerId);
-            const customerName = customer ? customer.name : 'Unknown';
-            const date = new Date(order.createdAt).toLocaleDateString().replace(/\//g, '.');
-            
-            tbody.append(`
-                <tr>
-                    <td>${order.id}</td>
-                    <td>${customerName}</td>
-                    <td>${date}</td>
-                    <td><strong>${order.total.toFixed(2)}</strong></td>
-                </tr>
-            `);
+        $('.chart-path').attr('d', pathData);
+        $('.chart-area').attr('d', areaData);
+        
+        // Update points
+        data.forEach((value, index) => {
+            const x = index * 100;
+            const y = 200 - ((value / maxValue) * 180);
+            $(`.chart-point`).eq(index).attr('cy', y);
         });
     },
     
@@ -219,7 +109,7 @@ const POSView = {
                 <tr>
                     <td>${item.code}</td>
                     <td>${item.name}</td>
-                    <td>RS: ${item.price.toFixed(2)}</td>
+                    <td>$${item.price.toFixed(2)}</td>
                     <td>${item.quantity}</td>
                     <td>
                         <button class="btn btn-sm btn-warning edit-item" data-id="${item.id}">Edit</button>
@@ -248,12 +138,12 @@ const POSView = {
             tbody.append(`
                 <tr>
                     <td>${item.name}</td>
-                    <td>RS: ${item.price.toFixed(2)}</td>
+                    <td>$${item.price.toFixed(2)}</td>
                     <td>
                         <input type="number" class="form-control form-control-sm order-item-quantity" 
                                value="${item.quantity}" min="1" data-index="${index}">
                     </td>
-                    <td>RS: ${subtotal.toFixed(2)}</td>
+                    <td>$${subtotal.toFixed(2)}</td>
                     <td>
                         <button class="btn btn-sm btn-danger remove-order-item" data-index="${index}">Remove</button>
                     </td>
@@ -279,7 +169,7 @@ const POSView = {
                 <tr>
                     <td>${item.code}</td>
                     <td>${item.name}</td>
-                    <td>RS: ${item.price.toFixed(2)}</td>
+                    <td>$${item.price.toFixed(2)}</td>
                     <td>${item.quantity}</td>
                 </tr>
             `);
@@ -307,7 +197,7 @@ const POSView = {
                     <td>${customerName}</td>
                     <td>${date}</td>
                     <td>${order.items.length} items</td>
-                    <td>RS: ${order.total.toFixed(2)}</td>
+                    <td>$${order.total.toFixed(2)}</td>
                 </tr>
             `);
         });
@@ -330,7 +220,7 @@ const POSView = {
         
         POSModel.getAllItems().forEach(item => {
             if (item.quantity > 0) {
-                select.append(`<option value="${item.id}">${item.name} - RS: ${item.price}</option>`);
+                select.append(`<option value="${item.id}">${item.name} - $${item.price}</option>`);
             }
         });
     }
