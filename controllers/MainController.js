@@ -8,6 +8,7 @@ class MainController {
     }
     
     init() {
+        this.model.init(); // Initialize the model
         this.initializeControllers();
         this.bindEvents();
         this.loadSampleData();
@@ -15,6 +16,7 @@ class MainController {
     }
     
     initializeControllers() {
+        // Initialize all controllers
         this.controllers.auth = new AuthController(this.model, this.view);
         this.controllers.customer = new CustomerController(this.model, this.view);
         this.controllers.item = new ItemController(this.model, this.view);
@@ -90,68 +92,68 @@ class MainController {
             address: '321 Marine Drive, Mount Lavinia'
         });
         
-        // Add sample items
+        // Add sample restaurant items
         this.model.addItem({
             code: 'ITEM001',
-            name: 'Laptop Dell XPS',
-            price: 150000.00,
-            quantity: 15
-        });
-        
-        this.model.addItem({
-            code: 'ITEM002',
-            name: 'Wireless Mouse',
-            price: 2500.00,
+            name: 'Rice Plate',
+            price: 450.00,
             quantity: 50
         });
         
         this.model.addItem({
-            code: 'ITEM003',
-            name: 'Mechanical Keyboard',
-            price: 8500.00,
+            code: 'ITEM002',
+            name: 'Chicken Curry',
+            price: 550.00,
             quantity: 30
         });
         
         this.model.addItem({
+            code: 'ITEM003',
+            name: 'Vegetable Fried Rice',
+            price: 380.00,
+            quantity: 40
+        });
+        
+        this.model.addItem({
             code: 'ITEM004',
-            name: 'USB-C Hub',
-            price: 3500.00,
-            quantity: 25
+            name: 'Kottu Roti',
+            price: 120.00,
+            quantity: 60
         });
         
         this.model.addItem({
             code: 'ITEM005',
-            name: 'Monitor 24" LED',
-            price: 45000.00,
-            quantity: 20
+            name: 'String Hoppers',
+            price: 180.00,
+            quantity: 45
         });
         
         this.model.addItem({
             code: 'ITEM006',
-            name: 'Webcam HD',
-            price: 6500.00,
+            name: 'Lamprais',
+            price: 250.00,
             quantity: 35
         });
         
         this.model.addItem({
             code: 'ITEM007',
-            name: 'Headphones Bluetooth',
-            price: 12000.00,
-            quantity: 40
+            name: 'Fish Ambul Thiyal',
+            price: 850.00,
+            quantity: 25
         });
         
         this.model.addItem({
             code: 'ITEM008',
-            name: 'External SSD 1TB',
-            price: 18000.00,
-            quantity: 22
+            name: 'Dhal Curry',
+            price: 420.00,
+            quantity: 55
         });
         
         this.model.addItem({
             code: 'ITEM009',
-            name: 'Power Bank 20000mAh',
-            price: 5500.00,
-            quantity: 60
+            name: 'Pittu',
+            price: 150.00,
+            quantity: 70
         });
         
         // Add sample orders
@@ -180,5 +182,6 @@ class MainController {
             ],
             total: 45000.00
         });
-    }
+        
+            }
 }

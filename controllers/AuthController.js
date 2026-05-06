@@ -1,8 +1,8 @@
 // Basic Authentication Controller
 class AuthController {
-    constructor(model, view) {
-        this.model = model;
-        this.view = view;
+    constructor() {
+        this.users = [{ username: 'admin', password: 'admin123' }];
+        this.currentUser = null;
         this.init();
     }
     
@@ -19,6 +19,13 @@ class AuthController {
         
         // Logout button
         $('#logoutBtn').on('click', () => this.logout());
+        
+        // Navigation
+        $('.nav-link[data-section]').on('click', (e) => {
+            e.preventDefault();
+            const section = $(e.currentTarget).data('section');
+            this.showSection(section);
+        });
     }
     
     login() {
@@ -30,9 +37,9 @@ class AuthController {
             return;
         }
         
-        if (this.model.authenticate(username, password)) {
-            this.view.showMainApp();
-            this.view.showSection('dashboard');
+        if (this.authenticate(username, password)) {
+            this.showMainApp();
+            this.showSection('dashboard');
             this.showSuccess('Login successful!');
         } else {
             this.showError('Invalid credentials');
@@ -40,9 +47,36 @@ class AuthController {
     }
     
     logout() {
-        this.model.logout();
-        this.view.showLogin();
+        this.currentUser = null;
+        this.showLogin();
         this.showSuccess('Logged out successfully!');
+    }
+    
+    authenticate(username, password) {
+        const user = this.users.find(u => u.username === username && u.password === password);
+        if (user) {
+            this.currentUser = username;
+            return true;
+        }
+        return false;
+    }
+    
+    showMainApp() {
+        $('#loginContainer').addClass('d-none');
+        $('#mainApp').removeClass('d-none');
+    }
+    
+    showLogin() {
+        $('#loginContainer').removeClass('d-none');
+        $('#mainApp').addClass('d-none');
+    }
+    
+    showSection(sectionName) {
+        $('.content-section').addClass('d-none');
+        $(`#${sectionName}Section`).removeClass('d-none');
+        
+        $('.nav-link').removeClass('active');
+        $(`.nav-link[data-section="${sectionName}"]`).addClass('active');
     }
     
     showSuccess(message) {
