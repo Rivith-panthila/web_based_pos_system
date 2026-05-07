@@ -26,6 +26,9 @@ body {
     height: 100vh;
     position: fixed;
     border-left: 8px solid #2c3e50; /* මේක වැදගත් */
+    display: flex;
+    flex-direction: column;
+    
 }
 
 .sidebar-header {
@@ -35,6 +38,15 @@ body {
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+}
+
+.sidebar-header>h4 {
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .sidebar-nav {
@@ -47,6 +59,9 @@ body {
     /* Search bar එකේ යට මට්ටමට එනකම් පහළට ගන්න */
     /* Topbar එකේ padding සහ height එකට ගැලපෙන ලෙස මෙය වෙනස් කරන්න */
     margin-top: 55px; 
+    display: flex;
+    flex-direction: column;
+    
 }
 
 .nav-item {
