@@ -13,11 +13,35 @@ $('addCustomerBtn').on('click',function(){
    saveCustomerBtn.text("save Customer");
 });
 
+$('customerTable').on('click','.cust-edit-action',function(){
+    let row=$(this).closets('tr');
+    let id=row.find('td').eq(0).text();
+    let name=row.find('td').eq(1).text();
+    let contact=row.find('td').eq(2).text();
+    let address=row.find('td').eq(3).text();
+    
+});
+
+$('customerTable').on('click','.cust-delete-action',function(){
+    
+});
+
+
+
+
+
 
 saveCustomerBtn.on('click',function(){
     let id=$('#customerId').val();
     let name=$('#customerName').val();
     let contact=$('#customerContact').val();
     let address=$('#customerAddress').val();
+    $('customerId').attr('readonly',false);
+
+
+    if(id!="" && name!="" && contact!="" && address!=""){
+
+        if(saveCustomerBtn.text())
+    }
     
 })
