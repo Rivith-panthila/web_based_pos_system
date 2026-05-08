@@ -1,89 +1,64 @@
-// Basic Authentication Controller
-class AuthController {
-    constructor() {
-        this.users = [{ username: 'admin', password: 'admin123' }];
-        this.currentUser = null;
-        this.init();
-    }
+// 1. දත්ත ගබඩා කරගැනීම (Variables)
+var registeredUser = "r";
+var registeredPass = "1";
+
+// 2. පේජ් එක load වුණාම වැඩේ පටන් ගන්න
+$(document).ready(function() {
     
-    init() {
-        this.bindEvents();
-    }
-    
-    bindEvents() {
-        // Login form
-        $('#loginForm').on('submit', (e) => {
-            e.preventDefault();
-            this.login();
-        });
+    // Login Form එක submit කරන වෙලාව
+    $('#loginForm').on('submit', function(e) {
+        e.preventDefault(); // Page එක refresh වීම නවත්වයි
         
-        // Logout button
-        $('#logoutBtn').on('click', () => this.logout());
-        
-        // Navigation
-        $('.nav-link[data-section]').on('click', (e) => {
-            e.preventDefault();
-            const section = $(e.currentTarget).data('section');
-            this.showSection(section);
-        });
-    }
-    
-    login() {
-        const username = $('#username').val().trim();
-        const password = $('#password').val().trim();
-        
-        if (!username || !password) {
-            this.showError('Please enter username and password');
-            return;
-        }
-        
-        if (this.authenticate(username, password)) {
-            this.showMainApp();
-            this.showSection('dashboard');
-            this.showSuccess('Login successful!');
+        // Input fields වල තියෙන දේවල් ලබාගැනීම
+        var inputUser = $('#username').val();
+        var inputPass = $('#password').val();
+
+        // පරීක්ෂා කිරීම (Authentication)
+        if (inputUser === registeredUser && inputPass === registeredPass) {
+            loginSuccess();
         } else {
-            this.showError('Invalid credentials');
+            alert("Username හෝ Password වැරදියි!");
         }
-    }
-    
-    logout() {
-        this.currentUser = null;
-        this.showLogin();
-        this.showSuccess('Logged out successfully!');
-    }
-    
-    authenticate(username, password) {
-        const user = this.users.find(u => u.username === username && u.password === password);
-        if (user) {
-            this.currentUser = username;
-            return true;
-        }
-        return false;
-    }
-    
-    showMainApp() {
-        $('#loginContainer').addClass('d-none');
-        $('#mainApp').removeClass('d-none');
-    }
-    
-    showLogin() {
-        $('#loginContainer').removeClass('d-none');
+    });
+
+    // Logout button එක click කරන වෙලාව
+    $('#logoutBtn').on('click', function() {
+        logoutUser();
+    });
+
+    // Sidebar එකේ navigation links click කරන වෙලාව
+    $('.nav-link').on('click', function(e) {
+        e.preventDefault();
+        var sectionName = $(this).data('section'); // data-section අගය ලබාගැනීම
+        changeSection(sectionName);
+    });
+
+});
+
+// --- වැඩ කරන functions ටික මෙන්න ---
+
+function loginSuccess() {
+    $('#loginContainer').addClass('d-none'); // Login එක හංගන්න
+    $('#mainApp').removeClass('d-none');    // Dashboard පෙන්වන්න
+    changeSection('dashboard');             // මුලින්ම dashboard එකට යන්න
+}
+
+function logoutUser() {
+    if (confirm("Logout වෙන්න ඕනද?")) {
         $('#mainApp').addClass('d-none');
+        $('#loginContainer').removeClass('d-none');
+        $('#loginForm')[0].reset(); // Form එක හිස් කරන්න
     }
+}
+
+function changeSection(sectionId) {
+    // හැම section එකක්ම හංගන්න
+    $('.content-section').addClass('d-none');
     
-    showSection(sectionName) {
-        $('.content-section').addClass('d-none');
-        $(`#${sectionName}Section`).removeClass('d-none');
-        
-        $('.nav-link').removeClass('active');
-        $(`.nav-link[data-section="${sectionName}"]`).addClass('active');
-    }
-    
-    showSuccess(message) {
-        alert(message);
-    }
-    
-    showError(message) {
-        alert(message);
-    }
+    // අපිට අවශ්‍ය section එක විතරක් පෙන්වන්න
+    $('#' + sectionId + 'Section').removeClass('d-none');
+
+    // Sidebar එකේ active පාට මාරු කරන්න
+    $('.nav-link').removeClass('active');
+    $('.nav-link[data-section="' + sectionId + '"]').addClass('active');
 }

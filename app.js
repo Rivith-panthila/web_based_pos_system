@@ -4,7 +4,9 @@
 // Initialize application when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     const authController = new AuthController();
-
+    const customerController = new CustomerController();
+    
     // Make globally accessible for debugging
     window.authController = authController;
+    window.customerController = customerController;
 });
