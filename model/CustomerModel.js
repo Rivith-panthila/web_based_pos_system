@@ -75,6 +75,19 @@ const updateCustomer = (id, name, contact, address) => {
         obj.setAddress(address);
     }
 }
+
+const deleteCustomer = (id) => {
+    // item.id වෙනුවට item.getId() පාවිච්චි කරන්න
+    let index = customer_db.findIndex(item => item.getId() === id);
+    
+    if (index !== -1) {
+        customer_db.splice(index, 1);
+        console.log("Deleted customer index: " + index);
+        return true;
+    }
+    console.log("Customer not found for ID: " + id);
+    return false;
+}
     
 
-export { addCustomerData, getAllCustomers, updateCustomer };
+export { addCustomerData, getAllCustomers, updateCustomer, deleteCustomer };

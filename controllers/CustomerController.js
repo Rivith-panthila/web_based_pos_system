@@ -1,4 +1,4 @@
-import { addCustomerData, getAllCustomers ,updateCustomer} from "../model/CustomerModel.js";
+import { addCustomerData, getAllCustomers ,updateCustomer,deleteCustomer} from "../model/CustomerModel.js";
 
 const customerForm = $('#customerForm');
 const customerModalTitle = $('#customerModalTitle');
@@ -79,6 +79,14 @@ saveCustomerBtn.on('click', function () {
 
 
 });
+
+
+$('#customerTable').on('click', '.cust-delete-action', function () {
+    let id = $(this).closest('tr').find('td:eq(0)').text();
+    deleteCustomer(id);
+    loadCustomers();
+});
+
 
 loadCustomers();
 
