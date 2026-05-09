@@ -92,9 +92,5 @@ const generateNextItemCode = () => {
 };
 
 export {
-    addItemData,
-    getAllItems,
-    updateItem,
-    deleteItem,
-    generateNextItemCode
+    addItemData,getAllItems, updateItem, deleteItem, generateNextItemCode
 };
