@@ -42,3 +42,35 @@ const addItemData = (code, name, price, quantity) => {
     const newItem = new Item(code, name, price, quantity);
     item_db.unshift(newItem);
 };
+
+// 2. Get All Items
+const getAllItems = () => {
+    return item_db.map(item => item.getDetails());
+};
+
+// 3. Update Item
+const updateItem = (code, name, price, quantity) => {
+    let obj = item_db.find(item => item.getCode() === code);
+
+    if (obj) {
+        obj.setName(name);
+        obj.setPrice(price);
+        obj.setQuantity(quantity);
+        return true;
+    }
+
+    return false;
+};
+
+
+// 4. Delete Item
+const deleteItem = (code) => {
+    let index = item_db.findIndex(item => item.getCode() === code);
+
+    if (index !== -1) {
+        item_db.splice(index, 1);
+        return true;
+    }
+
+    return false;
+};
