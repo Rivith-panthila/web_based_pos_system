@@ -36,3 +36,9 @@ class Item {
         };
     }
 }
+
+// 1. Add Item
+const addItemData = (code, name, price, quantity) => {
+    const newItem = new Item(code, name, price, quantity);
+    item_db.unshift(newItem);
+};
