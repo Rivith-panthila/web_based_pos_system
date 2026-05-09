@@ -1,6 +1,7 @@
 import { customer_db } from '../db/db.js';
 
 class Customer {
+    // Private properties
     #id;
     #name;
     #contact;
@@ -13,7 +14,18 @@ class Customer {
         this.#address = address;
     }
 
-    // දත්ත පිටතට ලබා දීම සඳහා (Controller එකේ loadCustomers ට අවශ්‍යයි)
+    // --- Getters ---
+    getId() { return this.#id; }
+    getName() { return this.#name; }
+    getContact() { return this.#contact; }
+    getAddress() { return this.#address; }
+
+    // --- Setters ---
+    setName(name) { this.#name = name; }
+    setContact(contact) { this.#contact = contact; }
+    setAddress(address) { this.#address = address; }
+
+    // Table එකේ display කරන්න ලේසි වෙන්න Object එකක් ලෙස ලබා ගැනීම
     getDetails() {
         return {
             id: this.#id,
@@ -22,72 +34,50 @@ class Customer {
             address: this.#address
         };
     }
-
-    getId(){
-        return this.#id;
-    }
-
-    getName(){
-        return this.#name;
-    }
-
-    getContact(){
-        return this.#contact;
-    }
-
-    getAddress(){
-        return this.#address;
-    }
-
-    setId(id){
-        this.#id=id;
-    }
-
-    setName(name){
-        this.#name=name;
-    }
-
-    setContact(contact){
-        this.#contact=contact;
-    }
-
-    setAddress(address){
-        this.#address=address;
-    }
 }
 
+// 1. අලුත් Customer කෙනෙක් ඇතුළත් කිරීම
 const addCustomerData = (id, name, contact, address) => {
-    // Class name එක Customer (Capital) නිසා මෙතන ප්‍රශ්නයක් වෙන්නේ නැහැ
     const newCustomer = new Customer(id, name, contact, address);
-    customer_db.unshift(newCustomer);
-}
+    customer_db.unshift(newCustomer); // අලුත් අයව Array එකේ මුලට එකතු කරයි
+};
 
+// 2. සියලුම දත්ත ලබා ගැනීම
 const getAllCustomers = () => {
-    // Private fields (#) කෙලින්ම පේන්නේ නැති නිසා detail objects විදිහට return කරනවා
     return customer_db.map(c => c.getDetails());
-}
+};
 
+// 3. දත්ත Update කිරීම
 const updateCustomer = (id, name, contact, address) => {
-    let obj=customer_db.find(item => item.getId() === id);
+    let obj = customer_db.find(item => item.getId() === id);
     if (obj) {
         obj.setName(name);
         obj.setContact(contact);
         obj.setAddress(address);
-    }
-}
-
-const deleteCustomer = (id) => {
-    // item.id වෙනුවට item.getId() පාවිච්චි කරන්න
-    let index = customer_db.findIndex(item => item.getId() === id);
-    
-    if (index !== -1) {
-        customer_db.splice(index, 1);
-        console.log("Deleted customer index: " + index);
         return true;
     }
-    console.log("Customer not found for ID: " + id);
     return false;
-}
-    
+};
 
-export { addCustomerData, getAllCustomers, updateCustomer, deleteCustomer };
+// 4. දත්ත Delete කිරීම
+const deleteCustomer = (id) => {
+    let index = customer_db.findIndex(item => item.getId() === id);
+    if (index !== -1) {
+        customer_db.splice(index, 1);
+        return true;
+    }
+    return false;
+};
+
+// 5. ඊළඟ ID එක Auto-Generate කිරීම
+const generateNextId = () => {
+    if (customer_db.length === 0) {
+        return "C001";
+    }
+    // දැනට තියෙන ලොකුම ID අංකය සොයා ගැනීම
+    const ids = customer_db.map(c => parseInt(c.getId().replace("C", "")));
+    const maxId = Math.max(...ids);
+    return "C" + (maxId + 1).toString().padStart(3, '0');
+};
+
+export { addCustomerData, getAllCustomers, updateCustomer, deleteCustomer, generateNextId };
