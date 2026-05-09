@@ -74,3 +74,27 @@ const deleteItem = (code) => {
 
     return false;
 };
+
+// 5. Generate Next Item Code
+const generateNextItemCode = () => {
+
+    if (item_db.length === 0) {
+        return "I001";
+    }
+
+    const codes = item_db.map(item =>
+        parseInt(item.getCode().replace("I", ""))
+    );
+
+    const maxCode = Math.max(...codes);
+
+    return "I" + (maxCode + 1).toString().padStart(3, '0');
+};
+
+export {
+    addItemData,
+    getAllItems,
+    updateItem,
+    deleteItem,
+    generateNextItemCode
+};
