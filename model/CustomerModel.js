@@ -1,16 +1,26 @@
-import{customer_db} from '../db/db.js';
+import { customer_db } from '../db/db.js';
 
-class customer{
+class Customer {
     #id;
     #name;
     #contact;
-    #Address;
+    #address;
 
-    constructor(id,name,contact,address){
-        this.#id=id;
-        this.#name=name;
-        this.#contact=contact;
-        this.#Address=address;
+    constructor(id, name, contact, address) {
+        this.#id = id;
+        this.#name = name;
+        this.#contact = contact;
+        this.#address = address;
+    }
+
+    // දත්ත පිටතට ලබා දීම සඳහා (Controller එකේ loadCustomers ට අවශ්‍යයි)
+    getDetails() {
+        return {
+            id: this.#id,
+            name: this.#name,
+            contact: this.#contact,
+            address: this.#address
+        };
     }
 
     getId(){
@@ -26,7 +36,7 @@ class customer{
     }
 
     getAddress(){
-        return this.#Address;
+        return this.#address;
     }
 
     setId(id){
@@ -42,20 +52,29 @@ class customer{
     }
 
     setAddress(address){
-        this.#Address=address;
+        this.#address=address;
     }
-
 }
 
-const addCustomerData=(id,name,contact,address)=>{
-    const customer=new customer(id,name,contact,address);
-    customer_db.unshift(customer);
+const addCustomerData = (id, name, contact, address) => {
+    // Class name එක Customer (Capital) නිසා මෙතන ප්‍රශ්නයක් වෙන්නේ නැහැ
+    const newCustomer = new Customer(id, name, contact, address);
+    customer_db.unshift(newCustomer);
+}
+
+const getAllCustomers = () => {
+    // Private fields (#) කෙලින්ම පේන්නේ නැති නිසා detail objects විදිහට return කරනවා
+    return customer_db.map(c => c.getDetails());
+}
+
+const updateCustomer = (id, name, contact, address) => {
+    let obj=customer_db.find(item => item.getId() === id);
+    if (obj) {
+        obj.setName(name);
+        obj.setContact(contact);
+        obj.setAddress(address);
+    }
+}
     
-}
 
-const getAllCustomers=()=>{
-    return customer_db;
-}
-
-
-export{addCustomerData,getAllCustomers}
+export { addCustomerData, getAllCustomers, updateCustomer };

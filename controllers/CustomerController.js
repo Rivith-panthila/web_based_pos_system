@@ -1,4 +1,4 @@
-import { addCustomerData, getAllCustomers } from "../model/CustomerModel.js";
+import { addCustomerData, getAllCustomers ,updateCustomer} from "../model/CustomerModel.js";
 
 const customerForm = $('#customerForm');
 const customerModalTitle = $('#customerModalTitle');
@@ -68,6 +68,7 @@ saveCustomerBtn.on('click', function () {
             addCustomerData(id, name, contact, address);
         } else if (saveCustomerBtn.text() === "Update Customer") {
    
+            updateCustomer(id, name, contact, address);
         }
         $('#customerId').attr('readonly', false);           
         customerModal.hide(); 
