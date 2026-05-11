@@ -16,3 +16,15 @@ class Order {
         this.#items = items;
         this.#total = total;
     }
+    getDetails() {
+        return {
+            orderId: this.#orderId,
+            customerId: this.#customerId,
+            date: this.#date,
+            items: this.#items,
+            total: this.#total
+        };
+    }
+
+    getOrderId() { return this.#orderId; }
+}
