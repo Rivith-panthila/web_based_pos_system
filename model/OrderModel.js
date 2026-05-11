@@ -28,3 +28,23 @@ class Order {
 
     getOrderId() { return this.#orderId; }
 }
+
+
+const saveOrderData = (orderId, customerId, date, items, total) => {
+    const newOrder = new Order(orderId, customerId, date, items, total);
+    order_db.unshift(newOrder); // අලුත් order එක මුලටම දානවා
+    return true;
+};
+
+const getAllOrders = () => {
+    return order_db.map(order => order.getDetails());
+};
+
+const generateNextOrderId = () => {
+    if (order_db.length === 0) return "OID-001";
+    const ids = order_db.map(o => parseInt(o.getOrderId().replace("OID-", "")));
+    const maxId = Math.max(...ids);
+    return "OID-" + (maxId + 1).toString().padStart(3, '0');
+};
+
+export { saveOrderData, getAllOrders, generateNextOrderId };
