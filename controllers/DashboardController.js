@@ -8,4 +8,15 @@ export function updateDashboardStats() {
     $('#itemCount').text(item_db.length);
     $('#orderCount').text(order_db.length);
 
+    // Income එක ගණනය කිරීම
+    let totalIncome = order_db.reduce((total, order) => total + order.total, 0);
+    $('#totalRevenue').text(`RS: ${totalIncome.toFixed(2)}`);
+    
+    updateOrdersChart();
+}
+
+function updateOrdersChart() {
+    const ctx = document.getElementById('ordersChart').getContext('2d');
+    
+
 }
