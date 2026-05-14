@@ -18,5 +18,16 @@ export function updateDashboardStats() {
 function updateOrdersChart() {
     const ctx = document.getElementById('ordersChart').getContext('2d');
     
+    // දැනට තියෙන chart එකක් ඇත්නම් එය ඉවත් කරන්න (Re-render glitch වැළැක්වීමට)
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
 
+    window.myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], // මේවා db එකෙන් dynamic ගන්න පුළුවන්
+            datasets: [{
+                label: 'Orders',
+ 
 }
