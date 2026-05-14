@@ -4,5 +4,8 @@ import { order_db } from '../db/db.js';
 
 export function updateDashboardStats() {
     // Stat cards වල අගයන් update කිරීම
-  
+    $('#customerCount').text(customer_db.length);
+    $('#itemCount').text(item_db.length);
+    $('#orderCount').text(order_db.length);
+
 }
