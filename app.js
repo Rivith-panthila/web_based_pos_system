@@ -1,12 +1,12 @@
-// POS System - Main Application JavaScript
-// Simplified authentication and navigation
+import { AuthController } from "./controllers/AuthController.js";
+import { CustomerController } from "./controllers/CustomerController.js";
 
-// Initialize application when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+
     const authController = new AuthController();
     const customerController = new CustomerController();
-    
-    // Make globally accessible for debugging
+
     window.authController = authController;
     window.customerController = customerController;
+
 });

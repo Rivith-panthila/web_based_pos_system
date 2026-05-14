@@ -1,5 +1,5 @@
 import {addItemData,getAllItems,updateItem,deleteItem,generateNextItemCode} from "../model/ItemModel.js";
-
+import { loadAvailableItems } from "./OrderController.js";
 
 const itemForm = $('#itemForm');
 const saveItemBtn = $('#saveItemBtn');
@@ -98,6 +98,7 @@ saveItemBtn.on('click', function () {
         }
 
         itemModal.hide();
+        loadAvailableItems();
 
         loadItems();
 

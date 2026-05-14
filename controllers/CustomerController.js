@@ -1,4 +1,5 @@
 import { addCustomerData, getAllCustomers, updateCustomer, deleteCustomer, generateNextId } from "../model/CustomerModel.js";
+import { loadCustomerSelect } from "./OrderController.js";
 
 const customerForm = $('#customerForm');
 const customerModalTitle = $('#customerModalTitle');
@@ -67,6 +68,7 @@ saveCustomerBtn.on('click', function () {
         }
         customerModal.hide(); 
         loadCustomers();
+        loadCustomerSelect();
     } else {
         alert("Please fill in all fields.");
     }
