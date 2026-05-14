@@ -29,5 +29,16 @@ function updateOrdersChart() {
             labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], // මේවා db එකෙන් dynamic ගන්න පුළුවන්
             datasets: [{
                 label: 'Orders',
- 
+                data: [12, 19, 3, 5, 2, 3, 10], // order_db එකෙන් data filter කරලා ගන්න
+                borderColor: '#0d6efd',
+                tension: 0.4,
+                fill: true,
+                backgroundColor: 'rgba(13, 110, 253, 0.1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
 }
