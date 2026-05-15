@@ -5,6 +5,7 @@ import {
 
 import { getAllCustomers } from "../model/CustomerModel.js";
 import { getAllItems } from "../model/ItemModel.js";
+import { updateDashboardStats } from "./DashboardController.js";
 
 
 
@@ -226,6 +227,8 @@ $('#placeOrderBtn').on('click', function () {
     loadAvailableItems();
 
     loadOrderHistory();
+
+    updateDashboardStats();
 
 });
 

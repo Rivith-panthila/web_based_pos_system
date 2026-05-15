@@ -1,12 +1,12 @@
 import { addCustomerData, getAllCustomers, updateCustomer, deleteCustomer, generateNextId } from "../model/CustomerModel.js";
 import { loadCustomerSelect } from "./OrderController.js";
+import { updateDashboardStats } from "./DashboardController.js";
 
 const customerForm = $('#customerForm');
 const customerModalTitle = $('#customerModalTitle');
 const saveCustomerBtn = $('#saveCustomerBtn');
 const customerModal = new bootstrap.Modal($('#customerModal')[0]); 
 
-// Table එක Load කරන function එක
 function loadCustomers() {
     $('#customer_tbody').empty();
     const customerList = getAllCustomers();
@@ -27,7 +27,7 @@ function loadCustomers() {
     });
 }
 
-// Add Customer Modal එක open කිරීම
+
 $('#addCustomerBtn').on('click', function () {
     customerForm[0].reset();
     
@@ -39,7 +39,7 @@ $('#addCustomerBtn').on('click', function () {
     customerModal.show();
 });
 
-// Edit Button (Table එකේ)
+// Edit btn
 $('#customerTable').on('click', '.cust-edit-action', function () {
     let row = $(this).closest('tr');
     
@@ -53,7 +53,7 @@ $('#customerTable').on('click', '.cust-edit-action', function () {
     customerModal.show();
 });
 
-// Save හෝ Update Button එක
+// Save update btn
 saveCustomerBtn.on('click', function () {
     let id      = $('#customerId').val();
     let name    = $('#customerName').val().trim();
@@ -69,6 +69,7 @@ saveCustomerBtn.on('click', function () {
         customerModal.hide(); 
         loadCustomers();
         loadCustomerSelect();
+        updateDashboardStats();
     } else {
         alert("Please fill in all fields.");
     }
@@ -80,14 +81,15 @@ $('#customerTable').on('click', '.cust-delete-action', function () {
     if (confirm("Are you sure you want to delete ID: " + id + "?")) {
         deleteCustomer(id);
         loadCustomers();
+        updateDashboardStats();
     }
 });
 
 $('#addCustomerBtn').on('click', function () {
-    // Form එක reset කරනවා
+
     customerForm[0].reset();
     
-    // Model එකෙන් අලුත් ID එක අරගෙන field එකට දානවා
+    
     let nextId = generateNextId();
     $('#customerId').val(nextId).attr('readonly', true); 
     
@@ -96,5 +98,5 @@ $('#addCustomerBtn').on('click', function () {
     customerModal.show();
 });
 
-// මුලින්ම පටන් ගනිද්දී දත්ත Load කිරීම
+
 loadCustomers();

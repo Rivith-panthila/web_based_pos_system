@@ -28,7 +28,7 @@ class Order {
     getTotal() { return this.#total; }
     getDate() { return this.#date; }
 
-    // Object Return
+    // object returns
     getDetails() {
         return {
             orderId: this.#orderId,
@@ -42,7 +42,7 @@ class Order {
 
 }
 
-// Add Order
+// add orderr
 const addOrder = (customerId, customerName, items, total) => {
 
     let orderId = generateNextOrderId();
@@ -60,7 +60,7 @@ const addOrder = (customerId, customerName, items, total) => {
 
     order_db.unshift(newOrder);
 
-    // Update Stock
+    // update stock
     items.forEach(orderItem => {
 
         let itemObj = item_db.find(
@@ -79,14 +79,14 @@ const addOrder = (customerId, customerName, items, total) => {
 
 };
 
-// Get All Orders
+// all orders
 const getAllOrders = () => {
 
     return order_db.map(order => order.getDetails());
 
 };
 
-// Generate Order ID
+// id genrate
 const generateNextOrderId = () => {
 
     if (order_db.length === 0) {

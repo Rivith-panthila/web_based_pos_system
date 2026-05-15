@@ -1,44 +1,98 @@
-import { customer_db } from '../db/db.js';
-import { item_db } from '../db/db.js';
-import { order_db } from '../db/db.js';
+import { getAllCustomers } from "../model/CustomerModel.js";
+import { getAllItems } from "../model/ItemModel.js";
+import { getAllOrders } from "../model/OrderModel.js";
 
-export function updateDashboardStats() {
-    // Stat cards වල අගයන් update කිරීම
-    $('#customerCount').text(customer_db.length);
-    $('#itemCount').text(item_db.length);
-    $('#orderCount').text(order_db.length);
+let ordersChart = null;
 
-    // Income එක ගණනය කිරීම
-    let totalIncome = order_db.reduce((total, order) => total + order.total, 0);
-    $('#totalRevenue').text(`RS: ${totalIncome.toFixed(2)}`);
-    
-    updateOrdersChart();
+// Dashboard Stats
+function updateDashboardStats() {
+
+    const customers = getAllCustomers();
+    const items = getAllItems();
+    const orders = getAllOrders();
+
+    // Counts
+    $('#customerCount').text(customers.length);
+    $('#itemCount').text(items.length);
+    $('#orderCount').text(orders.length);
+
+    // Revenue
+    let totalRevenue = orders.reduce(
+        (total, order) => total + parseFloat(order.total),
+        0
+    );
+
+    $('#totalRevenue').text(`RS: ${totalRevenue.toFixed(2)}`);
+
+    loadRecentOrders();
+    loadOrdersChart();
 }
 
-function updateOrdersChart() {
-    const ctx = document.getElementById('ordersChart').getContext('2d');
-    
-    // දැනට තියෙන chart එකක් ඇත්නම් එය ඉවත් කරන්න (Re-render glitch වැළැක්වීමට)
-    if (window.myChart) {
-        window.myChart.destroy();
+// Recent Orders Table
+function loadRecentOrders() {
+
+    $('#recentOrdersTableBody').empty();
+
+    const orders = getAllOrders();
+
+    orders.slice(0, 5).forEach(order => {
+
+        $('#recentOrdersTableBody').append(`
+            <tr>
+                <td>${order.orderId}</td>
+                <td>${order.customerName}</td>
+                <td>${order.date}</td>
+                <td>RS ${order.total}</td>
+            </tr>
+        `);
+
+    });
+
+}
+
+// Chart
+function loadOrdersChart() {
+
+    const orders = getAllOrders();
+
+    const labels = orders.map(order => order.date);
+
+    const totals = orders.map(order => order.total);
+
+    const ctx = document.getElementById('ordersChart');
+
+    if (ordersChart) {
+        ordersChart.destroy();
     }
 
-    window.myChart = new Chart(ctx, {
-        type: 'line',
+    ordersChart = new Chart(ctx, {
+
+        type: 'bar',
+
         data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], // මේවා db එකෙන් dynamic ගන්න පුළුවන්
+
+            labels: labels,
+
             datasets: [{
-                label: 'Orders',
-                data: [12, 19, 3, 5, 2, 3, 10], // order_db එකෙන් data filter කරලා ගන්න
-                borderColor: '#0d6efd',
-                tension: 0.4,
-                fill: true,
-                backgroundColor: 'rgba(13, 110, 253, 0.1)'
+                label: 'Order Totals',
+
+                data: totals,
+
+                borderWidth: 1
             }]
         },
+
         options: {
             responsive: true,
-            maintainAspectRatio: false
+
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
+
 }
+
+export { updateDashboardStats };

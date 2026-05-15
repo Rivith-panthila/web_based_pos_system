@@ -1,6 +1,6 @@
 import {addItemData,getAllItems,updateItem,deleteItem,generateNextItemCode} from "../model/ItemModel.js";
 import { loadAvailableItems } from "./OrderController.js";
-
+import { updateDashboardStats } from "./DashboardController.js";
 const itemForm = $('#itemForm');
 const saveItemBtn = $('#saveItemBtn');
 const itemModal = new bootstrap.Modal($('#itemModal')[0]);
@@ -101,6 +101,7 @@ saveItemBtn.on('click', function () {
         loadAvailableItems();
 
         loadItems();
+        updateDashboardStats();
 
     } else {
 
@@ -120,6 +121,7 @@ $('#itemsTable').on('click', '.item-delete-action', function () {
         deleteItem(code);
 
         loadItems();
+        updateDashboardStats();
 
     }
 
